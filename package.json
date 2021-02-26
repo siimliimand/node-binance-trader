@@ -20,7 +20,8 @@
     "scripts": {
         "start": "node ./src/server.js",
         "trader": "node ./src/trader.js",
-        "backtest": "node ./src/backtest.js"
+        "backtest": "node ./src/backtest.js",
+        "pull": "git pull https://github.com/jsappme/node-binance-trader.git master"
     },
     "dependencies": {
         "axios": "^0.21.1",
