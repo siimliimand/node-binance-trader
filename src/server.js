@@ -122,7 +122,7 @@ async function trackData() {
     console.log("----")
     for (var i = 0, len = pairs.length; i < len; i++) {
         console.log("--> " + pairs[i])
-        if (insert_into_db) await createPgPairTable(pairs[i])
+        if (insert_into_db) await createPgPairTableIfNotExists(pairs[i])
         await trackPairData(pairs[i])
         await sleep(wait_time) //let's be safe with the api biance calls
     }
@@ -542,6 +542,19 @@ async function checkSignal(pair) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SIGNAL DECLARATION - END /////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+async function createPgPairTableIfNotExists(pair) {
+    const tableName = nbt_prefix + pair
+    const sql = "SELECT EXISTS (SELECT id FROM " + tableName + " LIMIT 1)"
+    const query = {
+        text: sql,
+    }
+    pg_client.query(query, (err, res) => {
+        if (err) {
+            createPgPairTable(pair)
+        }
+    })
+}
 
 async function createPgPairTable(pair) {
     return pg_client
